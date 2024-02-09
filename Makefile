@@ -24,11 +24,11 @@ util.o: util.cpp util.h
 	$(CXX) $(CXXFLAGS) $(DEFS) -o $@ -c util.cpp
 mydatastore.o: mydatastore.cpp mydatastore.h datastore.h
 	$(CXX) $(CXXFLAGS) $(DEFS) -o $@ -c mydatastore.cpp
-Book.o: Book.cpp Book.h Product.h Product.cpp
+Book.o: Book.cpp Book.h product.h product.cpp
 	$(CXX) $(CXXFLAGS) $(DEFS) -o $@ -c Book.cpp
-Movie.o: Movie.cpp Movie.h Product.h Product.cpp
+Movie.o: Movie.cpp Movie.h product.h product.cpp
 	$(CXX) $(CXXFLAGS) $(DEFS) -o $@ -c Movie.cpp
-Clothing.o: Clothing.cpp Clothing.h Product.h Product.cpp
+Clothing.o: Clothing.cpp Clothing.h product.h product.cpp
 	$(CXX) $(CXXFLAGS) $(DEFS) -o $@ -c Clothing.cpp
 
 clean:
