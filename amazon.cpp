@@ -5,7 +5,12 @@
 #include <vector>
 #include <iomanip>
 #include <algorithm>
+#include <map>
+#include "mydatastore.h"
 #include "product.h"
+#include "Book.h"
+#include "Clothing.h"
+#include "Movie.h"
 #include "db_parser.h"
 #include "product_parser.h"
 #include "util.h"
@@ -29,7 +34,7 @@ int main(int argc, char* argv[])
      * Declare your derived DataStore object here replacing
      *  DataStore type to your derived type
      ****************/
-    DataStore ds;
+    MyDataStore ds;
 
 
 
@@ -62,6 +67,7 @@ int main(int argc, char* argv[])
     cout << "====================================" << endl;
 
     vector<Product*> hits;
+    map<string, vector<Product*>> cart;
     bool done = false;
     while(!done) {
         cout << "\nEnter command: " << endl;
@@ -100,7 +106,73 @@ int main(int argc, char* argv[])
                 done = true;
             }
 	    /* Add support for other commands here */
-
+            else if (cmd == "ADD") {
+                string username;
+                int hit_result_index;
+                
+                ss >> username >> hit_result_index;
+                if (ds.myUsers.find(username) == ds.myUsers.end())
+                {
+                    cout << "invalid request\n";
+                    continue;
+                }
+                
+                if (cart.find(username) != cart.end())
+                {
+                    cart.find(username)->second.push_back(hits[hit_result_index-1]);
+                }
+                else
+                {
+                    vector<Product*> newProductList;
+                    newProductList.push_back(hits[hit_result_index-1]);
+                    cart.insert(make_pair(username, newProductList));
+                }
+                
+            } else if (cmd == "BUYCART") {
+                string username;
+                ss >> username;
+                
+                if (ds.myUsers.find(username) == ds.myUsers.end())
+                {
+                    cout << "invalid username\n";
+                    continue;
+                }
+                
+                User* currUser = ds.myUsers.find(username)->second;
+                vector<Product*>& currUserCart = cart.find(username)->second;
+                for (unsigned int i = 0; i < currUserCart.size(); i++)
+                {
+                    Product* currProduct = currUserCart[i];
+                    if (currProduct->getQty() <= 0) continue;
+                    if (currProduct->getPrice() <= currUser->getBalance())  //Afordable
+                    {
+                        currUser->deductAmount(currProduct->getPrice());
+                        currProduct->subtractQty(1);
+                        currUserCart.erase(currUserCart.begin()+i);
+                        i--;
+                    } else continue;
+                }
+            }
+            else if (cmd == "VIEWCART") {
+                string username;
+                ss >> username;
+                
+                if (ds.myUsers.find(username) == ds.myUsers.end())
+                {
+                    cout << "invalid username\n";
+                    continue;
+                }
+                
+                
+                vector<Product*>& currUserCart = cart.find(username)->second;
+                for (unsigned int i = 0; i < currUserCart.size(); i++)
+                {
+                    cout << "Item ";
+                    cout << i+1 << endl;
+                    cout << currUserCart[i]->displayString();
+                    cout << endl;
+                }
+            }
 
 
 
@@ -110,6 +182,18 @@ int main(int argc, char* argv[])
         }
 
     }
+    
+    
+    for (unsigned int i = 0; i < ds.myProducts.size(); i++)
+    {
+        delete ds.myProducts[i];
+    }
+    
+    for (unsigned int i = 0; i < ds.myUsersVect.size(); i++)
+    {
+        delete ds.myUsersVect[i];
+    }
+    
     return 0;
 }
 

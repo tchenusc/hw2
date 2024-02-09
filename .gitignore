@@ -1,3 +1,6 @@
 *.o
+*.exe
+.DS_Store
 amazon
 hw2_tests/
+hw2_tests.tar.gz
