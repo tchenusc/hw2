@@ -1,4 +1,4 @@
-#include "Clothing.h"
+#include "clothing.h"
 #include <iomanip>
 #include <sstream>
 

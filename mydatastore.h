@@ -1,9 +1,9 @@
 #ifndef MYDATASTORE_H
 #define MYDATASTORE_H
 #include "datastore.h"
-#include "Book.h"
-#include "Clothing.h"
-#include "Movie.h"
+#include "book.h"
+#include "clothing.h"
+#include "movie.h"
 #include <vector>
 #include <map>
 #include <set>
